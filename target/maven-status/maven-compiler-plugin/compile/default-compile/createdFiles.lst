@@ -1,0 +1,12 @@
+cn\colins\rocketmqstarter\producer\RocketMqProducer.class
+cn\colins\rocketmqstarter\producer\AbstractRocketMqProducer$1.class
+cn\colins\rocketmqstarter\RocketmqStarterApplication.class
+META-INF\spring-configuration-metadata.json
+cn\colins\rocketmqstarter\producer\RocketMqFactory.class
+cn\colins\rocketmqstarter\config\RocketMqAutoConfiguration.class
+cn\colins\rocketmqstarter\producer\AbstractRocketMqProducer.class
+cn\colins\rocketmqstarter\producer\RocketMqProducerService.class
+cn\colins\rocketmqstarter\annotation\RocketResource.class
+cn\colins\rocketmqstarter\producer\config\DefaultMQProducerConfig.class
+cn\colins\rocketmqstarter\processor\RocketMqAnnotationBeanPostProcessor.class
+cn\colins\rocketmqstarter\producer\config\RocketMqProducerConfig.class

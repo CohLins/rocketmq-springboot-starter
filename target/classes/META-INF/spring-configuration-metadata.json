@@ -1,0 +1,23 @@
+{
+  "groups": [
+    {
+      "name": "rocket-mq.producer",
+      "type": "cn.colins.rocketmqstarter.producer.config.RocketMqProducerConfig",
+      "sourceType": "cn.colins.rocketmqstarter.producer.config.RocketMqProducerConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "rocket-mq.producer.default-m-q-producer-configs",
+      "type": "java.util.List<cn.colins.rocketmqstarter.producer.config.DefaultMQProducerConfig>",
+      "sourceType": "cn.colins.rocketmqstarter.producer.config.RocketMqProducerConfig"
+    },
+    {
+      "name": "rocket-mq.producer.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "cn.colins.rocketmqstarter.producer.config.RocketMqProducerConfig",
+      "defaultValue": false
+    }
+  ],
+  "hints": []
+}
