@@ -1,6 +1,8 @@
 package cn.colins.rocketmqstarter.processor;
 
+import cn.colins.rocketmqstarter.annotation.RocketMqConsumerHandler;
 import cn.colins.rocketmqstarter.annotation.RocketResource;
+import cn.colins.rocketmqstarter.consumer.RocketMqMsgHandler;
 import cn.colins.rocketmqstarter.producer.factory.RocketMqProducerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
@@ -14,7 +16,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 
-public class RocketMqAnnotationBeanPostProcessor implements InstantiationAwareBeanPostProcessor {
+public class RocketResourceAnnotationBeanPostProcessor implements InstantiationAwareBeanPostProcessor {
     private final static String DEFAULT = "DEFAULT";
     private static final Set<Class<? extends Annotation>> resourceAnnotationTypes = new LinkedHashSet(4);
 
@@ -24,7 +26,7 @@ public class RocketMqAnnotationBeanPostProcessor implements InstantiationAwareBe
 
     private RocketMqProducerFactory rocketMqProducerFactory;
 
-    public RocketMqAnnotationBeanPostProcessor(RocketMqProducerFactory rocketMqProducerFactory) {
+    public RocketResourceAnnotationBeanPostProcessor(RocketMqProducerFactory rocketMqProducerFactory) {
         this.rocketMqProducerFactory = rocketMqProducerFactory;
     }
 

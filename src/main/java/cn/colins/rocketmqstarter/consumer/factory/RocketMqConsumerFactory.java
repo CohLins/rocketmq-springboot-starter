@@ -1,6 +1,8 @@
 package cn.colins.rocketmqstarter.consumer.factory;
 
+import cn.colins.rocketmqstarter.consumer.RocketMqConsumerDefaultService;
 import cn.colins.rocketmqstarter.consumer.RocketMqConsumerService;
+import cn.colins.rocketmqstarter.consumer.RocketMqMsgHandler;
 import cn.colins.rocketmqstarter.consumer.config.RocketMqConsumerBaseConfig;
 import cn.colins.rocketmqstarter.consumer.config.RocketMqConsumerConfig;
 import cn.colins.rocketmqstarter.producer.RocketMqProducerService;
@@ -27,6 +29,8 @@ public class RocketMqConsumerFactory {
 
     private final RocketMqConsumerConfig commonConsumerConfig;
 
+
+
     public RocketMqConsumerFactory(RocketMqConsumerConfig mqConsumerConfig) {
         this.commonConsumerConfig=mqConsumerConfig;
     }
@@ -36,6 +40,14 @@ public class RocketMqConsumerFactory {
         consumerBaseConfig.setNamesrvAddr(consumerBaseConfig.getNamesrvAddr() == null ? commonConsumerConfig.getNamesrvAddr() : consumerBaseConfig.getNamesrvAddr());
         Assert.isNull(consumerBaseConfig.getNamesrvAddr(),consumerBaseConfig.getConsumerGroup() + " : namesrvAddr is not null ");
         Assert.isTrue(CONSUMER_CONFIG.add(consumerBaseConfig), "There are two identical consumer groups : "+ consumerBaseConfig.getConsumerGroup());
+    }
+
+    public void setConsumer(RocketMqConsumerBaseConfig consumerBaseConfig, RocketMqMsgHandler mqMsgHandler){
+        CONSUMER_MAP.put(consumerBaseConfig.getConsumerGroup(),new RocketMqConsumerDefaultService(consumerBaseConfig,mqMsgHandler));
+    }
+
+    public RocketMqConsumerConfig getCommonConsumerConfig(){
+        return commonConsumerConfig;
     }
 
     @PostConstruct

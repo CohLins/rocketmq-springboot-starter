@@ -50,4 +50,8 @@ public @interface RocketMqConsumerHandler {
      * 消费失败最大重试次数 默认16次
      **/
     int maxReconsumeTimes() default 16;
+    /**
+     * 是否顺序消费
+     **/
+    boolean isOrderConsumer() default false;
 }

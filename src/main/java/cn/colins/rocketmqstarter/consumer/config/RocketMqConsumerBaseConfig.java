@@ -19,6 +19,7 @@ public class RocketMqConsumerBaseConfig {
     private Integer pullBatchSize;
     private Integer consumeTimeout;
     private Integer maxReconsumeTimes;
+    private Boolean isOrderConsumer;
 
 
     public String getNamesrvAddr() {
@@ -127,5 +128,13 @@ public class RocketMqConsumerBaseConfig {
 
     public Set<RocketMqConsumerSubscribe> getSubscribes() {
         return this.subscribes;
+    }
+
+    public Boolean getOrderConsumer() {
+        return isOrderConsumer;
+    }
+
+    public void setOrderConsumer(Boolean orderConsumer) {
+        isOrderConsumer = orderConsumer;
     }
 }

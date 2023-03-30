@@ -17,11 +17,11 @@ import java.util.List;
 @Slf4j
 public class RocketMqConsumerDefaultService implements RocketMqConsumerService {
 
-    private DefaultMQPushConsumer consumer;
+    private final DefaultMQPushConsumer consumer;
 
     private final RocketMqConsumerBaseConfig consumerBaseConfig;
 
-    private RocketMqMsgHandler mqMsgHandler;
+    private final RocketMqMsgHandler mqMsgHandler;
 
     public RocketMqConsumerDefaultService(RocketMqConsumerBaseConfig consumerConfig, RocketMqMsgHandler mqMsgHandler) {
         this.consumerBaseConfig = consumerConfig;

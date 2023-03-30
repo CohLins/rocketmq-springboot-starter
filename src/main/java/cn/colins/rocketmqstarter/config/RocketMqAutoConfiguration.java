@@ -1,7 +1,7 @@
 package cn.colins.rocketmqstarter.config;
 
 import cn.colins.rocketmqstarter.consumer.config.RocketMqConsumerConfig;
-import cn.colins.rocketmqstarter.processor.RocketMqAnnotationBeanPostProcessor;
+import cn.colins.rocketmqstarter.processor.RocketResourceAnnotationBeanPostProcessor;
 import cn.colins.rocketmqstarter.producer.factory.RocketMqProducerFactory;
 import cn.colins.rocketmqstarter.producer.config.RocketMqProducerConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -29,8 +29,8 @@ public class RocketMqAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(RocketMqProducerFactory.class)
-    public RocketMqAnnotationBeanPostProcessor rocketMqAnnotationBeanPostProcessor(RocketMqProducerFactory rocketMqProducerFactory){
-        return new RocketMqAnnotationBeanPostProcessor(rocketMqProducerFactory);
+    public RocketResourceAnnotationBeanPostProcessor rocketMqAnnotationBeanPostProcessor(RocketMqProducerFactory rocketMqProducerFactory){
+        return new RocketResourceAnnotationBeanPostProcessor(rocketMqProducerFactory);
     }
 
 }
