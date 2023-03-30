@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RocketMqProducerFactory {
 
-    private static ConcurrentHashMap<String, RocketMqProducerService> ROCKET_PRODUCER=new ConcurrentHashMap(8);
+    private static ConcurrentHashMap<String, RocketMqProducerService> ROCKET_PRODUCER=new ConcurrentHashMap(4);
 
 
     public RocketMqProducerFactory(RocketMqProducerConfig rocketMqProducerConfig) {

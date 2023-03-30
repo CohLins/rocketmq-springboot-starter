@@ -24,9 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RocketMqConsumerFactory {
 
-    private static ConcurrentHashMap<String, RocketMqConsumerService> CONSUMER_MAP = new ConcurrentHashMap(8);
+    private static ConcurrentHashMap<String, RocketMqConsumerService> CONSUMER_MAP = new ConcurrentHashMap(4);
 
-    private static Set<RocketMqConsumerBaseConfig> CONSUMER_CONFIG = new HashSet<>(16);
+    private static Set<RocketMqConsumerBaseConfig> CONSUMER_CONFIG = new HashSet<>(4);
 
     private final RocketMqConsumerConfig commonConsumerConfig;
 
