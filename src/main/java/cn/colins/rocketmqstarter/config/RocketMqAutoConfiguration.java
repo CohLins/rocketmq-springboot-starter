@@ -1,7 +1,8 @@
 package cn.colins.rocketmqstarter.config;
 
+import cn.colins.rocketmqstarter.consumer.config.RocketMqConsumerConfig;
 import cn.colins.rocketmqstarter.processor.RocketMqAnnotationBeanPostProcessor;
-import cn.colins.rocketmqstarter.producer.RocketMqFactory;
+import cn.colins.rocketmqstarter.producer.factory.RocketMqProducerFactory;
 import cn.colins.rocketmqstarter.producer.config.RocketMqProducerConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -17,18 +18,19 @@ import org.springframework.context.annotation.Configuration;
  * @Date 2023/3/28
  */
 @Configuration
-@EnableConfigurationProperties(RocketMqProducerConfig.class)
-@ConditionalOnProperty(value = {"rocket-mq.producer.enabled"}, havingValue = "true")
+@EnableConfigurationProperties({RocketMqProducerConfig.class, RocketMqConsumerConfig.class})
 public class RocketMqAutoConfiguration {
 
     @Bean
-    public RocketMqFactory rocketMqFactory(RocketMqProducerConfig rocketMqProducerConfig){
-        return new RocketMqFactory(rocketMqProducerConfig);
+    @ConditionalOnProperty(value = {"rocket-mq.producer.enabled"}, havingValue = "true")
+    public RocketMqProducerFactory rocketMqFactory(RocketMqProducerConfig rocketMqProducerConfig){
+        return new RocketMqProducerFactory(rocketMqProducerConfig);
     }
 
     @Bean
-    @ConditionalOnBean(RocketMqFactory.class)
-    public RocketMqAnnotationBeanPostProcessor rocketMqAnnotationBeanPostProcessor(RocketMqFactory rocketMqFactory){
-        return new RocketMqAnnotationBeanPostProcessor(rocketMqFactory);
+    @ConditionalOnBean(RocketMqProducerFactory.class)
+    public RocketMqAnnotationBeanPostProcessor rocketMqAnnotationBeanPostProcessor(RocketMqProducerFactory rocketMqProducerFactory){
+        return new RocketMqAnnotationBeanPostProcessor(rocketMqProducerFactory);
     }
+
 }

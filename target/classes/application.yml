@@ -2,10 +2,14 @@
 rocket-mq:
   producer:
     enabled: true
-    default-m-q-producer-configs:
+    namesrv-addr: 10.0.3.2:9876
+    default-mq-producer-configs:
       - namesrvAddr: 10.0.3.2:9876
         producerGroup: TEST_PRODUCER_GROUP1
       - namesrvAddr: 10.0.3.2:9876
         producerGroup: TEST_PRODUCER_GROUP2
+
+
+
 server:
   port: 8050

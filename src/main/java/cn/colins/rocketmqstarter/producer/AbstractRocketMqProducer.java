@@ -143,17 +143,10 @@ public abstract class AbstractRocketMqProducer implements RocketMqProducer{
     }
 
     protected void startProducer(){
-        try {
-            producer.start();
-            log.info("RocketMqProducerGroup:{} start success",producerGroup);
-        } catch (Exception e) {
-            log.info("RocketMqProducerGroup:{} start error:{}",producerGroup,e.getMessage());
-        }
+
     }
 
     protected void shutDownProducer(){
-        if (producer != null) {
-            producer.shutdown();
-        }
+
     }
 }

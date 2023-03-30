@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 
+@Slf4j
 public class RocketMqProducerService extends AbstractRocketMqProducer {
 
     public RocketMqProducerService(DefaultMQProducerConfig rocketMqProducerConfig) {
@@ -27,5 +28,21 @@ public class RocketMqProducerService extends AbstractRocketMqProducer {
         producer.setNamesrvAddr(rocketMqProducerConfig.getNamesrvAddr());
         producer.setRetryTimesWhenSendFailed(rocketMqProducerConfig.getRetryTimesWhenSendFailed());
         producer.setSendMsgTimeout(rocketMqProducerConfig.getSendMsgTimeout());
+    }
+
+    @Override
+    public void startProducer(){
+        try {
+            producer.start();
+            log.info("RocketMqProducerGroup:{} start success",producerGroup);
+        } catch (Exception e) {
+            log.info("RocketMqProducerGroup:{} start error:{}",producerGroup,e.getMessage());
+        }
+    }
+    @Override
+    public void shutDownProducer(){
+        if (producer != null) {
+            producer.shutdown();
+        }
     }
 }

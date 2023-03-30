@@ -14,14 +14,14 @@ import java.util.List;
 @ConfigurationProperties(prefix = "rocket-mq.producer")
 public class RocketMqProducerConfig {
     private boolean enabled=false;
-
+    private String namesrvAddr;
     private List<DefaultMQProducerConfig> defaultMqProducerConfigs;
 
-    public List<DefaultMQProducerConfig> getDefaultMQProducerConfigs() {
+    public List<DefaultMQProducerConfig> getDefaultMqProducerConfigs() {
         return defaultMqProducerConfigs;
     }
 
-    public void setDefaultMQProducerConfigs(List<DefaultMQProducerConfig> defaultMQProducerConfigs) {
+    public void setDefaultMqProducerConfigs(List<DefaultMQProducerConfig> defaultMQProducerConfigs) {
         this.defaultMqProducerConfigs = defaultMQProducerConfigs;
     }
 
@@ -31,5 +31,13 @@ public class RocketMqProducerConfig {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getNamesrvAddr() {
+        return namesrvAddr;
+    }
+
+    public void setNamesrvAddr(String namesrvAddr) {
+        this.namesrvAddr = namesrvAddr;
     }
 }
