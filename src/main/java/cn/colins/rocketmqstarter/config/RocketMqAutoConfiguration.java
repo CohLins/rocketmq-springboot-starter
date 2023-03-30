@@ -1,6 +1,8 @@
 package cn.colins.rocketmqstarter.config;
 
 import cn.colins.rocketmqstarter.consumer.config.RocketMqConsumerConfig;
+import cn.colins.rocketmqstarter.consumer.factory.RocketMqConsumerFactory;
+import cn.colins.rocketmqstarter.processor.RocketMqConsumerBeanPostProcessor;
 import cn.colins.rocketmqstarter.processor.RocketResourceAnnotationBeanPostProcessor;
 import cn.colins.rocketmqstarter.producer.factory.RocketMqProducerFactory;
 import cn.colins.rocketmqstarter.producer.config.RocketMqProducerConfig;
@@ -23,7 +25,7 @@ public class RocketMqAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(value = {"rocket-mq.producer.enabled"}, havingValue = "true")
-    public RocketMqProducerFactory rocketMqFactory(RocketMqProducerConfig rocketMqProducerConfig){
+    public RocketMqProducerFactory rocketMqProducerFactory(RocketMqProducerConfig rocketMqProducerConfig){
         return new RocketMqProducerFactory(rocketMqProducerConfig);
     }
 
@@ -33,4 +35,16 @@ public class RocketMqAutoConfiguration {
         return new RocketResourceAnnotationBeanPostProcessor(rocketMqProducerFactory);
     }
 
+
+    @Bean
+    @ConditionalOnProperty(value = {"rocket-mq.consumer.enabled"}, havingValue = "true")
+    public RocketMqConsumerFactory rocketMqConsumerFactory(RocketMqConsumerConfig rocketMqConsumerConfig){
+        return new RocketMqConsumerFactory(rocketMqConsumerConfig);
+    }
+
+    @Bean
+    @ConditionalOnBean(RocketMqConsumerFactory.class)
+    public RocketMqConsumerBeanPostProcessor rocketMqAnnotationBeanPostProcessor(RocketMqConsumerFactory rocketMqConsumerFactory){
+        return new RocketMqConsumerBeanPostProcessor(rocketMqConsumerFactory);
+    }
 }

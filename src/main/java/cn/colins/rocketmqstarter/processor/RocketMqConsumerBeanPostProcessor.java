@@ -1,6 +1,6 @@
 package cn.colins.rocketmqstarter.processor;
 
-import java.util.HashSet;
+import java.util.*;
 
 import cn.colins.rocketmqstarter.consumer.config.RocketMqConsumerConfig;
 import cn.colins.rocketmqstarter.consumer.config.RocketMqConsumerSubscribe;
@@ -11,6 +11,7 @@ import cn.colins.rocketmqstarter.consumer.RocketMqMsgHandler;
 import cn.colins.rocketmqstarter.consumer.config.RocketMqConsumerBaseConfig;
 import cn.colins.rocketmqstarter.consumer.factory.RocketMqConsumerFactory;
 import cn.colins.rocketmqstarter.producer.factory.RocketMqProducerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
@@ -21,10 +22,8 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
-
+@Slf4j
 public class RocketMqConsumerBeanPostProcessor implements InstantiationAwareBeanPostProcessor {
 
     private final RocketMqConsumerFactory rocketMqConsumerFactory;
@@ -45,8 +44,16 @@ public class RocketMqConsumerBeanPostProcessor implements InstantiationAwareBean
         if (annotation == null) {
             return null;
         }
-        getConsumerConfig(annotation);
-        return null;
+        RocketMqConsumerBaseConfig consumerConfig = getConsumerConfig(annotation);
+        rocketMqConsumerFactory.setConsumerConfig(consumerConfig);
+        RocketMqMsgHandler rocketMqMsgHandler = null;
+        try {
+            rocketMqMsgHandler = (RocketMqMsgHandler) beanClass.newInstance();
+        } catch (Exception e) {
+            log.error("ConsumerGroup: {} dataHandler instantiation fail",consumerConfig.getConsumerGroup());
+        }
+        rocketMqConsumerFactory.setConsumer(consumerConfig,rocketMqMsgHandler);
+        return rocketMqMsgHandler;
     }
 
     private RocketMqConsumerBaseConfig getConsumerConfig(RocketMqConsumerHandler annotation) {
@@ -59,8 +66,13 @@ public class RocketMqConsumerBeanPostProcessor implements InstantiationAwareBean
         rocketMqConsumerBaseConfig.setPullBatchSize(annotation.pullBatchSize());
         rocketMqConsumerBaseConfig.setConsumeTimeout(annotation.consumeTimeout());
         rocketMqConsumerBaseConfig.setMaxReconsumeTimes(annotation.maxReconsumeTimes());
-        rocketMqConsumerBaseConfig.setSubscribes(new HashSet<RocketMqConsumerSubscribe>());
         rocketMqConsumerBaseConfig.setOrderConsumer(annotation.isOrderConsumer());
+        Set<RocketMqConsumerSubscribe> rocketMqConsumerSubscribes=new HashSet<>(4);
+        for(int i=0;i<annotation.subscribes().length;i++){
+            Assert.isTrue(rocketMqConsumerSubscribes.add(new RocketMqConsumerSubscribe(annotation.subscribes()[i].topic(),annotation.subscribes()[i].tag())),
+                    "ConsumerGroup: " + rocketMqConsumerBaseConfig.getConsumerGroup() + " can't subscribe to two of the same topics");
+        }
+        rocketMqConsumerBaseConfig.setSubscribes(rocketMqConsumerSubscribes);
         return rocketMqConsumerBaseConfig;
     }
 

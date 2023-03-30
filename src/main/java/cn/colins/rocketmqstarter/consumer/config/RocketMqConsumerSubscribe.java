@@ -10,7 +10,13 @@ package cn.colins.rocketmqstarter.consumer.config;
 public class RocketMqConsumerSubscribe {
 
     private String topic;
+
     private String tag;
+
+    public RocketMqConsumerSubscribe(String topic, String tag) {
+        this.tag = tag;
+        this.topic = topic;
+    }
 
     public String getTopic() {
         return topic;
@@ -27,6 +33,7 @@ public class RocketMqConsumerSubscribe {
     public void setTag(String tag) {
         this.tag = tag;
     }
+
     @Override
     public int hashCode() {
         final int prime = 31;

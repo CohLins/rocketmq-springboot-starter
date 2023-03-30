@@ -1,6 +1,7 @@
 package cn.colins.rocketmqstarter.consumer.factory;
 
 import cn.colins.rocketmqstarter.consumer.RocketMqConsumerDefaultService;
+import cn.colins.rocketmqstarter.consumer.RocketMqConsumerOrderlyService;
 import cn.colins.rocketmqstarter.consumer.RocketMqConsumerService;
 import cn.colins.rocketmqstarter.consumer.RocketMqMsgHandler;
 import cn.colins.rocketmqstarter.consumer.config.RocketMqConsumerBaseConfig;
@@ -43,7 +44,8 @@ public class RocketMqConsumerFactory {
     }
 
     public void setConsumer(RocketMqConsumerBaseConfig consumerBaseConfig, RocketMqMsgHandler mqMsgHandler){
-        CONSUMER_MAP.put(consumerBaseConfig.getConsumerGroup(),new RocketMqConsumerDefaultService(consumerBaseConfig,mqMsgHandler));
+        CONSUMER_MAP.put(consumerBaseConfig.getConsumerGroup(),consumerBaseConfig.getOrderConsumer() ?
+                new RocketMqConsumerOrderlyService(consumerBaseConfig,mqMsgHandler):new RocketMqConsumerDefaultService(consumerBaseConfig,mqMsgHandler));
     }
 
     public RocketMqConsumerConfig getCommonConsumerConfig(){
