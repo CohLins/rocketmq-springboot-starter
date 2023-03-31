@@ -1,12 +1,12 @@
-package cn.colins.rocketmqstarter.consumer;
+package cn.colins.rocketmqstarter.consumer.service;
 
+import cn.colins.rocketmqstarter.consumer.RocketMqConsumerService;
+import cn.colins.rocketmqstarter.consumer.RocketMqMsgHandler;
 import cn.colins.rocketmqstarter.consumer.config.RocketMqConsumerBaseConfig;
 import cn.colins.rocketmqstarter.consumer.config.RocketMqConsumerSubscribe;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
-import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+import org.apache.rocketmq.client.consumer.listener.*;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
 
@@ -15,7 +15,7 @@ import java.util.List;
 
 
 @Slf4j
-public class RocketMqConsumerDefaultService implements RocketMqConsumerService {
+public class RocketMqConsumerOrderlyService implements RocketMqConsumerService {
 
     private final DefaultMQPushConsumer consumer;
 
@@ -23,7 +23,7 @@ public class RocketMqConsumerDefaultService implements RocketMqConsumerService {
 
     private final RocketMqMsgHandler mqMsgHandler;
 
-    public RocketMqConsumerDefaultService(RocketMqConsumerBaseConfig consumerConfig, RocketMqMsgHandler mqMsgHandler) {
+    public RocketMqConsumerOrderlyService(RocketMqConsumerBaseConfig consumerConfig, RocketMqMsgHandler mqMsgHandler) {
         this.consumerBaseConfig = consumerConfig;
         this.consumer = new DefaultMQPushConsumer(consumerConfig.getConsumerGroup());
         this.consumer.setNamesrvAddr(consumerConfig.getNamesrvAddr());
@@ -47,26 +47,26 @@ public class RocketMqConsumerDefaultService implements RocketMqConsumerService {
             }
 
             // 注册回调实现类来处理从broker拉取回来的消息
-            consumer.registerMessageListener(new MessageListenerConcurrently() {
+            consumer.registerMessageListener(new MessageListenerOrderly() {
                 @Override
-                public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
+                public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs, ConsumeOrderlyContext context) {
                     for (MessageExt messageExt : msgs) {
                         try {
                             if (mqMsgHandler.beforeMsgHandler(messageExt)) {
                                 if (!mqMsgHandler.msgDataHandler(messageExt)) {
-                                    return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+                                    return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
                                 }
                                 mqMsgHandler.afterMsgHandler(messageExt);
                             }
                         } catch (Exception e) {
-                            if (mqMsgHandler.exceptionMsgHandler(messageExt,e)) {
-                                return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+                            if (mqMsgHandler.exceptionMsgHandler(messageExt, e)) {
+                                return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
                             }
                         } finally {
                             mqMsgHandler.finallyMsgHandler(messageExt);
                         }
                     }
-                    return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                    return ConsumeOrderlyStatus.SUCCESS;
                 }
             });
             // 启动消费者实例

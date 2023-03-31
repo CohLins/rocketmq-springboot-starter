@@ -12,7 +12,7 @@ public class DefaultMQProducerConfig {
     private String producerGroup;
     private Integer retryTimesWhenSendFailed=3;
     private Integer sendMsgTimeout=5000;
-    private String type;
+    private Boolean isSupportTransaction=false;
 
     public String getNamesrvAddr() {
         return namesrvAddr;
@@ -46,11 +46,12 @@ public class DefaultMQProducerConfig {
         this.sendMsgTimeout = sendMsgTimeout;
     }
 
-    public String getType() {
-        return type;
+
+    public Boolean getSupportTransaction() {
+        return isSupportTransaction;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setSupportTransaction(Boolean supportTransaction) {
+        isSupportTransaction = supportTransaction;
     }
 }

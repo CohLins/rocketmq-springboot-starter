@@ -1,6 +1,9 @@
 package cn.colins.rocketmqstarter.producer.factory;
 
 import cn.colins.rocketmqstarter.producer.RocketMqProducerService;
+import cn.colins.rocketmqstarter.producer.RocketMqTransactionHandler;
+import cn.colins.rocketmqstarter.producer.service.RocketMqProduceTransactionService;
+import cn.colins.rocketmqstarter.producer.service.RocketMqProducerDefaultService;
 import cn.colins.rocketmqstarter.producer.config.RocketMqProducerConfig;
 import org.springframework.util.Assert;
 
@@ -18,40 +21,37 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RocketMqProducerFactory {
 
-    private static ConcurrentHashMap<String, RocketMqProducerService> ROCKET_PRODUCER=new ConcurrentHashMap(4);
+    private static ConcurrentHashMap<String, RocketMqProducerService> ROCKET_PRODUCER = new ConcurrentHashMap(4);
 
+    public static ConcurrentHashMap<String, RocketMqTransactionHandler> ROCKET_TRANSACTION_HANDLER = new ConcurrentHashMap(16);
 
     public RocketMqProducerFactory(RocketMqProducerConfig rocketMqProducerConfig) {
-        Assert.notNull(rocketMqProducerConfig.getDefaultMqProducerConfigs(),"rocketMqProducerConfig is not null");
-        rocketMqProducerConfig.getDefaultMqProducerConfigs().forEach(item->{
-            item.setNamesrvAddr(item.getNamesrvAddr()==null ? rocketMqProducerConfig.getNamesrvAddr() : item.getNamesrvAddr());
-            ROCKET_PRODUCER.put(item.getProducerGroup(),new RocketMqProducerService(item));
+        Assert.notNull(rocketMqProducerConfig.getDefaultMqProducerConfigs(), "rocketMqProducerConfig is not null");
+        rocketMqProducerConfig.getDefaultMqProducerConfigs().forEach(item -> {
+            item.setNamesrvAddr(item.getNamesrvAddr() == null ? rocketMqProducerConfig.getNamesrvAddr() : item.getNamesrvAddr());
+            ROCKET_PRODUCER.put(item.getProducerGroup(), item.getSupportTransaction() ?
+                    new RocketMqProduceTransactionService(item) : new RocketMqProducerDefaultService(item));
         });
     }
 
-    public RocketMqProducerService getRocketMqProducerService(String producerGroup){
-        RocketMqProducerService rocketMqProducerService = ROCKET_PRODUCER.get(producerGroup);
-        Assert.notNull(rocketMqProducerService,producerGroup + "is not exist,setting attribute fail");
-        return rocketMqProducerService;
-    }
-
-    public RocketMqProducerService getRocketMqProducerService(){
-        Assert.notNull(ROCKET_PRODUCER, " RocketMqProducerService is not find,setting attribute fail");
-        return ROCKET_PRODUCER.values().iterator().next();
+    public RocketMqProducerService getRocketMqProducerService(String producerGroup) {
+        RocketMqProducerService rocketMqProducerDefaultService = ROCKET_PRODUCER.get(producerGroup);
+        Assert.notNull(rocketMqProducerDefaultService, producerGroup + "is not exist,setting attribute fail");
+        return rocketMqProducerDefaultService;
     }
 
     @PostConstruct
-    public void start(){
+    public void start() {
         Iterator<RocketMqProducerService> iterator = ROCKET_PRODUCER.values().iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             iterator.next().startProducer();
         }
     }
 
     @PreDestroy
-    public void shutDown(){
+    public void shutDown() {
         Iterator<RocketMqProducerService> iterator = ROCKET_PRODUCER.values().iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             iterator.next().shutDownProducer();
         }
     }

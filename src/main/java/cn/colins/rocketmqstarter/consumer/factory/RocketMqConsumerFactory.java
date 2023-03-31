@@ -1,17 +1,14 @@
 package cn.colins.rocketmqstarter.consumer.factory;
 
-import cn.colins.rocketmqstarter.consumer.RocketMqConsumerDefaultService;
-import cn.colins.rocketmqstarter.consumer.RocketMqConsumerOrderlyService;
+import cn.colins.rocketmqstarter.consumer.service.RocketMqConsumerDefaultService;
+import cn.colins.rocketmqstarter.consumer.service.RocketMqConsumerOrderlyService;
 import cn.colins.rocketmqstarter.consumer.RocketMqConsumerService;
 import cn.colins.rocketmqstarter.consumer.RocketMqMsgHandler;
 import cn.colins.rocketmqstarter.consumer.config.RocketMqConsumerBaseConfig;
 import cn.colins.rocketmqstarter.consumer.config.RocketMqConsumerConfig;
-import cn.colins.rocketmqstarter.producer.RocketMqProducerService;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

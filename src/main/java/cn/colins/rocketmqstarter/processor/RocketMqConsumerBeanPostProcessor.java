@@ -36,24 +36,18 @@ public class RocketMqConsumerBeanPostProcessor implements InstantiationAwareBean
     }
 
     @Override
-    public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
-        if (!RocketMqMsgHandler.class.isAssignableFrom(beanClass)) {
-            return null;
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        if (!RocketMqMsgHandler.class.isAssignableFrom(bean.getClass())) {
+            return bean;
         }
-        RocketMqConsumerHandler annotation = beanClass.getAnnotation(RocketMqConsumerHandler.class);
+        RocketMqConsumerHandler annotation = bean.getClass().getAnnotation(RocketMqConsumerHandler.class);
         if (annotation == null) {
-            return null;
+            return bean;
         }
         RocketMqConsumerBaseConfig consumerConfig = getConsumerConfig(annotation);
         rocketMqConsumerFactory.setConsumerConfig(consumerConfig);
-        RocketMqMsgHandler rocketMqMsgHandler = null;
-        try {
-            rocketMqMsgHandler = (RocketMqMsgHandler) beanClass.newInstance();
-        } catch (Exception e) {
-            log.error("ConsumerGroup: {} dataHandler instantiation fail",consumerConfig.getConsumerGroup());
-        }
-        rocketMqConsumerFactory.setConsumer(consumerConfig,rocketMqMsgHandler);
-        return rocketMqMsgHandler;
+        rocketMqConsumerFactory.setConsumer(consumerConfig,(RocketMqMsgHandler) bean);
+        return bean;
     }
 
     private RocketMqConsumerBaseConfig getConsumerConfig(RocketMqConsumerHandler annotation) {
