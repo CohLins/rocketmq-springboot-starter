@@ -10,5 +10,7 @@ public interface RocketMqMsgHandler {
 
     void afterMsgHandler(MessageExt msg);
 
-    boolean exceptionMsgHandler(MessageExt msg);
+    boolean exceptionMsgHandler(MessageExt msg, Exception e);
+
+    void finallyMsgHandler(MessageExt msg);
 }

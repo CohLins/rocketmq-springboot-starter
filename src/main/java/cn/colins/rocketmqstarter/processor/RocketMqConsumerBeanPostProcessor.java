@@ -26,7 +26,7 @@ import java.lang.reflect.Modifier;
 @Slf4j
 public class RocketMqConsumerBeanPostProcessor implements InstantiationAwareBeanPostProcessor {
 
-    private final RocketMqConsumerFactory rocketMqConsumerFactory;
+    private RocketMqConsumerFactory rocketMqConsumerFactory;
 
     private final RocketMqConsumerConfig consumerConfig;
 

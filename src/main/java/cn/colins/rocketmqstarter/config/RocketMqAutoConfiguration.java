@@ -31,7 +31,7 @@ public class RocketMqAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(RocketMqProducerFactory.class)
-    public RocketResourceAnnotationBeanPostProcessor rocketMqAnnotationBeanPostProcessor(RocketMqProducerFactory rocketMqProducerFactory){
+    public RocketResourceAnnotationBeanPostProcessor rocketResourceAnnotationBeanPostProcessor(RocketMqProducerFactory rocketMqProducerFactory){
         return new RocketResourceAnnotationBeanPostProcessor(rocketMqProducerFactory);
     }
 
@@ -44,7 +44,7 @@ public class RocketMqAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(RocketMqConsumerFactory.class)
-    public RocketMqConsumerBeanPostProcessor rocketMqAnnotationBeanPostProcessor(RocketMqConsumerFactory rocketMqConsumerFactory){
+    public RocketMqConsumerBeanPostProcessor rocketMqConsumerBeanPostProcessor(RocketMqConsumerFactory rocketMqConsumerFactory){
         return new RocketMqConsumerBeanPostProcessor(rocketMqConsumerFactory);
     }
 }

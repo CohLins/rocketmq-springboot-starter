@@ -8,7 +8,9 @@ rocket-mq:
         producerGroup: TEST_PRODUCER_GROUP1
       - namesrvAddr: 10.0.3.2:9876
         producerGroup: TEST_PRODUCER_GROUP2
-
+  consumer:
+    enabled: true
+    namesrv-addr: 10.0.3.2:9876
 
 
 server:

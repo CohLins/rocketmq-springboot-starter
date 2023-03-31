@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RocketMqSubscribes {
     String topic();
-    String tag();
+    String tag() default "*";
 }

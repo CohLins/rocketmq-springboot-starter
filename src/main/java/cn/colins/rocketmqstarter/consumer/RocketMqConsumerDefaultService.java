@@ -34,6 +34,7 @@ public class RocketMqConsumerDefaultService implements RocketMqConsumerService {
         this.consumer.setConsumeTimeout(consumerConfig.getConsumeTimeout());
         this.consumer.setMaxReconsumeTimes(consumerConfig.getMaxReconsumeTimes());
         this.mqMsgHandler = mqMsgHandler;
+        startConsumer();
     }
 
     @Override
@@ -58,9 +59,11 @@ public class RocketMqConsumerDefaultService implements RocketMqConsumerService {
                                 mqMsgHandler.afterMsgHandler(messageExt);
                             }
                         } catch (Exception e) {
-                            if (mqMsgHandler.exceptionMsgHandler(messageExt)) {
+                            if (mqMsgHandler.exceptionMsgHandler(messageExt,e)) {
                                 return ConsumeConcurrentlyStatus.RECONSUME_LATER;
                             }
+                        } finally {
+                            mqMsgHandler.finallyMsgHandler(messageExt);
                         }
                     }
                     return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
@@ -70,7 +73,7 @@ public class RocketMqConsumerDefaultService implements RocketMqConsumerService {
             consumer.start();
         } catch (MQClientException e) {
             e.printStackTrace();
-            log.error("[CustomerGroup:{} ] --> ERROR: {}", consumerBaseConfig.getConsumerGroup(), e.getMessage());
+            log.error("[CustomerGroup:{} ] --> START_ERROR: {}", consumerBaseConfig.getConsumerGroup(), e.getMessage());
         }
         log.info("[CustomerGroup: {} ] --> START_SUCCESS ", consumerBaseConfig.getConsumerGroup());
     }

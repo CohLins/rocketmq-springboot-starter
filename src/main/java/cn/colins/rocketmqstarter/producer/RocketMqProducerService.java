@@ -20,29 +20,32 @@ import javax.annotation.PreDestroy;
 @Slf4j
 public class RocketMqProducerService extends AbstractRocketMqProducer {
 
+
+
     public RocketMqProducerService(DefaultMQProducerConfig rocketMqProducerConfig) {
         Assert.notNull(rocketMqProducerConfig.getProducerGroup(), "ProducerGroup setting is not null");
         Assert.notNull(rocketMqProducerConfig.getNamesrvAddr(), "NamesrvAddr setting is not null");
-        producerGroup = rocketMqProducerConfig.getProducerGroup();
-        producer = new DefaultMQProducer(rocketMqProducerConfig.getProducerGroup());
-        producer.setNamesrvAddr(rocketMqProducerConfig.getNamesrvAddr());
-        producer.setRetryTimesWhenSendFailed(rocketMqProducerConfig.getRetryTimesWhenSendFailed());
-        producer.setSendMsgTimeout(rocketMqProducerConfig.getSendMsgTimeout());
+        super.producerGroup = rocketMqProducerConfig.getProducerGroup();
+        super.producer = new DefaultMQProducer(rocketMqProducerConfig.getProducerGroup());
+        super.producer.setNamesrvAddr(rocketMqProducerConfig.getNamesrvAddr());
+        super.producer.setRetryTimesWhenSendFailed(rocketMqProducerConfig.getRetryTimesWhenSendFailed());
+        super.producer.setSendMsgTimeout(rocketMqProducerConfig.getSendMsgTimeout());
     }
 
     @Override
-    public void startProducer(){
+    public void startProducer() {
         try {
-            producer.start();
-            log.info("RocketMqProducerGroup:{} start success",producerGroup);
+            super.producer.start();
+            log.info("RocketMqProducerGroup:{} start success", super.producerGroup);
         } catch (Exception e) {
-            log.info("RocketMqProducerGroup:{} start error:{}",producerGroup,e.getMessage());
+            log.info("RocketMqProducerGroup:{} start error:{}", super.producerGroup, e.getMessage());
         }
     }
+
     @Override
-    public void shutDownProducer(){
-        if (producer != null) {
-            producer.shutdown();
+    public void shutDownProducer() {
+        if (super.producer != null) {
+            super.producer.shutdown();
         }
     }
 }

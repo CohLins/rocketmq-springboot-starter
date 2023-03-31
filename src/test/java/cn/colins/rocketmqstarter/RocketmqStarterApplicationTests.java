@@ -16,8 +16,10 @@ class RocketmqStarterApplicationTests {
 
     @Test
     void contextLoads() {
-        System.out.println(rocketMqProducerService1.producerGroup);
-        System.out.println(rocketMqProducerService2.producerGroup);
+        rocketMqProducerService1.syncProducerSend("ES_RESUME_SYNC_ZL_TOPIC_CZL","test");
+        while (true){
+
+        }
     }
 
 }

@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: cn.colins.rocketmqstarter.RocketmqStarterApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.728 s - in cn.colins.rocketmqstarter.RocketmqStarterApplicationTests
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 3.789 s <<< FAILURE! - in cn.colins.rocketmqstarter.RocketmqStarterApplicationTests
+contextLoads  Time elapsed: 0.511 s  <<< ERROR!
+java.lang.NullPointerException
+	at cn.colins.rocketmqstarter.RocketmqStarterApplicationTests.contextLoads(RocketmqStarterApplicationTests.java:19)
+
