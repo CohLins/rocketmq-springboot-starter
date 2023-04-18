@@ -63,9 +63,8 @@ rocketMqProducer1.syncProducerOrderSend("TOPIC","tag","Hello Mq!","选择队列�
 rocketMqProducer1.asyncProducerOrderSend("TOPIC","tag","Hello Mq!","选择队列的Key");
 ```
   4. 启动成功可以看到日志：
-
-      ![](https://secure2.wostatic.cn/static/x4LRUjhWpPLWcVdErUM2JZ/image.png)
-
+![输入图片说明](image.png)
+     
 - **事务消息**
   1. 大体上与普通消息一致，配置只需要加上是否支持事务：
 
@@ -133,7 +132,7 @@ rocketMqProducer2.transactionProducerSend("TOPIC","*","Hello Mq!" , null);
 ```
   5. 结果
 
-      ![](https://secure2.wostatic.cn/static/o3UedibdDhrCXpM88c1LkT/image.png)
+     ![输入图片说明](image2.png)
 
 ## 消费者
 
@@ -188,7 +187,7 @@ public class RocketMqTestHandler implements RocketMqMsgHandler {
 ```
   3. 这样消费者就已经完成了，看下结果（同样启动成功后，会看到日志）
 
-      ![](https://secure2.wostatic.cn/static/3mp3k4KFxj8KhQ7iToees7/image.png)
+      ![输入图片说明](image3.png)
   4. 看下注解说明@RocketMqConsumerHandler
 
 ```Java
