@@ -1,13 +1,14 @@
 package cn.colins.rocketmqstarter.producer;
 
+import cn.colins.rocketmqstarter.producer.service.RocketMqProduceTransactionService;
 import cn.colins.rocketmqstarter.producer.service.RocketMqProducerDefaultService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.client.producer.DefaultMQProducer;
-import org.apache.rocketmq.client.producer.SendCallback;
-import org.apache.rocketmq.client.producer.SendResult;
-import org.apache.rocketmq.client.producer.SendStatus;
+import org.apache.rocketmq.client.producer.*;
 import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.common.message.MessageQueue;
 import org.apache.rocketmq.remoting.common.RemotingHelper;
+
+import java.util.List;
 
 
 @Slf4j
@@ -16,6 +17,11 @@ public class RocketMqProducer {
     private String producerGroup;
 
     private DefaultMQProducer producer;
+
+    public RocketMqProducer(RocketMqProduceTransactionService defaultService){
+        this.producer = defaultService.getMqProducer();
+        this.producerGroup = defaultService.getProducerGroup();
+    }
 
     public RocketMqProducer(RocketMqProducerDefaultService defaultService) {
         this.producer = defaultService.getMqProducer();
@@ -45,6 +51,25 @@ public class RocketMqProducer {
     public boolean syncProducerSend(String topic, String tag, String msg) {
         return syncProducerSend(topic, tag, msg, 0);
     }
+
+    public boolean syncProducerOrderSend(String topic, String tags, String msg, String orderKey) {
+        try {
+            Message message = new Message(topic, tags, msg.getBytes(RemotingHelper.DEFAULT_CHARSET));
+            SendResult result = producer.send(message, new MessageQueueSelector() {
+                @Override
+                public MessageQueue select(List<MessageQueue> messageQueues, Message message, Object o) {
+                    int index = Math.abs(orderKey.hashCode()) % messageQueues.size();
+                    return messageQueues.get(index);
+                }
+            }, orderKey);
+            log.info("[ProducerGroup:{}] TOPIC: {}--> msgID({}) :RESULT({})", producerGroup, topic, result.getMsgId(), result.getSendStatus());
+            return result.getSendStatus() == SendStatus.SEND_OK;
+        } catch (Exception e) {
+            log.info("[ProducerGroup:{}] TOPIC: {}-->SYNC_SEND_ERROR({})", producerGroup, topic, e.getMessage());
+        }
+        return false;
+    }
+
 
     /**
      * @return boolean 成功 true  失败 false
@@ -102,6 +127,36 @@ public class RocketMqProducer {
                 @Override
                 public void onException(Throwable throwable) {
                     log.info("[ProducerGroup:{}] TOPIC: {}-->ASYNC_BACK_ERROR({})", producerGroup, topic, throwable.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            log.error("[ProducerGroup:" + producerGroup + "] TOPIC:" + topic + "--> ASYNC_SEND_ERROR: " + e.getMessage());
+        }
+    }
+
+    /**
+     * @Description 异步发送顺序消息
+     * @Param [topic, tag, msg]
+     * @return void
+     **/
+    public void asyncProducerOrderSend(String topic, String tag, String msg ,String orderKey) {
+        try {
+            Message message = new Message(topic, tag, msg.getBytes(RemotingHelper.DEFAULT_CHARSET));
+            producer.send(message, new MessageQueueSelector() {
+                @Override
+                public MessageQueue select(List<MessageQueue> messageQueues, Message message, Object o) {
+                    int index = Math.abs(orderKey.hashCode()) % messageQueues.size();
+                    return messageQueues.get(index);
+                }
+            }, orderKey,new SendCallback() {
+                @Override
+                public void onSuccess(SendResult sendResult) {
+                    log.info("[ProducerGroup:{}] TOPIC: {}--> msgID({}) :RESULT({})", producerGroup, topic, sendResult.getMsgId(), sendResult.getSendStatus());
+                }
+
+                @Override
+                public void onException(Throwable throwable) {
+                    log.error("[ProducerGroup:{}] TOPIC: {}-->ASYNC_BACK_ERROR({})", producerGroup, topic, throwable.getMessage());
                 }
             });
         } catch (Exception e) {
